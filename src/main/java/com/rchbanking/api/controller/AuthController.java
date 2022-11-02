@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -21,12 +23,17 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    ResponseEntity<String> login (@RequestBody AuthRequest request) {
-        Optional<String> result = authService.Authenticate(request);
+    ResponseEntity<Map<String, Object>> login (@RequestBody AuthRequest request) {
+        Optional<String> result = Optional.ofNullable(authService.Authenticate(request).orElse(null));
+        Map<String,Object> map = new HashMap<>();
+        System.out.println(result);
         if (result.isPresent()) {
-            return new ResponseEntity<>(result.get(), HttpStatus.ACCEPTED);
+            map.put("access_token", result.get());
+            map.put("token_type", "Bearer");
+            map.put("expires_in",600000);
+            return new ResponseEntity<>(map, HttpStatus.ACCEPTED);
         }
-        return new ResponseEntity<>("", HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(map, HttpStatus.UNAUTHORIZED);
     }
 }
 

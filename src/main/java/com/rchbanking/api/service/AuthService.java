@@ -25,6 +25,6 @@ public class AuthService {
                 return Optional.ofNullable(jwtUtils.generateToken(request.getUsername()));
             }
         }
-        return null;
+        return Optional.empty();
     }
 }
