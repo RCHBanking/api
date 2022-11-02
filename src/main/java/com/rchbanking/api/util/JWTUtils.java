@@ -13,8 +13,7 @@ import java.util.HashMap;
 
 @Service
 public class JWTUtils {
-    @Value("${jwt.secret}")
-    private String secret;
+
     SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     public String generateToken(String username) {
         return Jwts.builder().setClaims(new HashMap<String, Object>())
