@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-import static javax.persistence.FetchType.LAZY;
-
 @Entity
 @Table(name="ACCOUNTS")
 @Data
@@ -19,7 +17,8 @@ public class Account {
     private Long id;
     private String name;
     private Double balance;
-    @ManyToOne
-    @JoinColumn(name="customer_id", nullable=false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="customer_id")
     private Customer customer;
+
 }
