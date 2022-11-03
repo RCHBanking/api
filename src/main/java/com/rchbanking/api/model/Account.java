@@ -5,22 +5,21 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Set;
+
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
-@Table(name="CUSTOMER")
+@Table(name="ACCOUNTS")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Customer {
+public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String firstname;
-    private String surname;
-    private String email;
-    private String username;
-    private String password;
-    @OneToMany(mappedBy = "customer")
-    Set<Account> accounts;
+    private String name;
+    private Double balance;
+    @ManyToOne
+    @JoinColumn(name="customer_id", nullable=false)
+    private Customer customer;
 }
