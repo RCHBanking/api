@@ -14,12 +14,11 @@ import java.util.*;
 @Service
 public class AccountService {
     private final AccountRepository accountRepository;
-    private final CustomerRepository customerRepository;
+
 
     @Autowired
-    public AccountService(AccountRepository accountRepository, CustomerRepository customerRepository) {
+    public AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
-        this.customerRepository = customerRepository;
     }
 
     public Account addAccount(Account account) {
