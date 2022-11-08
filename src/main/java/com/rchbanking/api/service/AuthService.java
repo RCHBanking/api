@@ -22,7 +22,7 @@ public class AuthService {
         Optional<Customer> customer = customerRepository.findByUsername(request.getUsername());
         if (customer.isPresent()) {
             if(BCrypt.checkpw(request.getPassword(), customer.get().getPassword())) {
-                return Optional.ofNullable(jwtUtils.generateToken(request.getUsername()));
+                return Optional.ofNullable(jwtUtils.generateToken(customer.get().getId().toString()));
             }
         }
         return Optional.empty();
