@@ -11,18 +11,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("api/account")
 @RestController
 public class AccountController {
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private CustomerService customerService;
 
 
 
-    @PostMapping("/createAccount")
-    public ResponseEntity<Account> addAccount(@RequestBody Account account) {
+    @PostMapping("/createAccount/{id}")
+    public ResponseEntity<Account> addAccount(@RequestBody Account account, @PathVariable("id") Long id) {
+        Optional<Customer> customer = customerService.findCustomerById(id);
+        account.setCustomer(customer.get());
         Account addedAccount = accountService.addAccount(account);
+
         return new ResponseEntity<>(addedAccount, HttpStatus.CREATED);
     }
     @GetMapping("/all")

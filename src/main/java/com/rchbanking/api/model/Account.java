@@ -1,8 +1,7 @@
 package com.rchbanking.api.model;
 
-import lombok.Data;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -19,6 +18,17 @@ public class Account {
     private Double balance;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="customer_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Customer customer;
 
+    @JsonBackReference
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 }

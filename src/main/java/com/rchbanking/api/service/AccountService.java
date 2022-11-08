@@ -4,6 +4,7 @@ import com.rchbanking.api.model.Account;
 
 
 import com.rchbanking.api.repository.AccountRepository;
+import com.rchbanking.api.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +14,12 @@ import java.util.*;
 @Service
 public class AccountService {
     private final AccountRepository accountRepository;
+    private final CustomerRepository customerRepository;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository) {
+    public AccountService(AccountRepository accountRepository, CustomerRepository customerRepository) {
         this.accountRepository = accountRepository;
+        this.customerRepository = customerRepository;
     }
 
     public Account addAccount(Account account) {
@@ -27,5 +30,8 @@ public class AccountService {
         return accountRepository.findAll();
     }
 
+    public List<Account> getAllAccountsByCustomerId(Long id){
+        return accountRepository.findAllByCustomerId(id);
+    }
 
 }
