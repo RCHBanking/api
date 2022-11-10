@@ -3,7 +3,6 @@ package com.rchbanking.api.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.Set;
 
@@ -18,11 +17,14 @@ public class Customer {
     private Long id;
     private String firstname;
     private String surname;
+    @Column(unique = true)
     private String email;
+    @Column(unique = true)
     private String username;
     private String password;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer", fetch = FetchType.EAGER)
     @ToString.Exclude
+    @JsonIgnore
     @EqualsAndHashCode.Exclude
     Set<Account> accounts;
 
