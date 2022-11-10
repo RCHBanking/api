@@ -17,7 +17,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
-    private Double balance;
+    private Double amount;
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -26,6 +26,7 @@ public class Transaction {
     @ToString.Exclude
     @JsonIgnore
     private Account account;
+
 
     @JsonBackReference
     public Account getAccount() { return account; }
