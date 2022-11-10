@@ -34,4 +34,10 @@ public class TransactionController {
         List<Transaction> transactions = transactionService.getAllTransactions();
         return new ResponseEntity<>(transactions, HttpStatus.OK);
     }
+
+    @GetMapping("/all/{id}")
+    public ResponseEntity<List<Transaction>> getAllTransactionsByAccountId(@PathVariable("id") Long id) {
+        List<Transaction> accountTransactions = transactionService.getAllTransactionsByAccountId(id);
+        return new ResponseEntity<>(accountTransactions, HttpStatus.OK);
+    }
 }
