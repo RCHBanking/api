@@ -4,9 +4,10 @@ import com.rchbanking.api.model.Transaction;
 import com.rchbanking.api.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
-
 @Service
 public class TransactionService {
 
@@ -22,6 +23,10 @@ public class TransactionService {
     public List<Transaction> getAllTransactions() { return transactionRepository.findAll(); }
 
     public List<Transaction> getAllTransactionsByAccountId(Long id)  { return transactionRepository.findAllByAccountId(id); }
+
+    public List<Transaction> getAllIncomeTransactions(Long id) {return transactionRepository.findAllIncome(id);}
+
+    public List<Transaction> getAllExpenseTransactions(Long id) {return transactionRepository.findAllExpenses(id);}
 
 
 }
