@@ -34,4 +34,6 @@ public class AccountService {
         return accountRepository.findAllByCustomerId(id);
     }
 
+    public Account updateAccount(Account account) { return accountRepository.save(account); }
+
 }

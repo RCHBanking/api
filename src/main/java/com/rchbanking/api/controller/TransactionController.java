@@ -2,6 +2,7 @@ package com.rchbanking.api.controller;
 
 import com.rchbanking.api.model.Account;
 import com.rchbanking.api.model.Transaction;
+import com.rchbanking.api.model.TransactionType;
 import com.rchbanking.api.service.AccountService;
 import com.rchbanking.api.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,71 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
-    @PostMapping("/create/{id}")
-    public ResponseEntity<Transaction> addTransaction(@RequestBody Transaction transaction, @PathVariable("id") Long id) {
+    @PostMapping("/create-deposit/{id}")
+    public ResponseEntity<Transaction> addDeposit(@RequestBody Transaction transaction, @PathVariable("id") Long id) {
         Optional<Account> account = accountService.findAccountById(id);
+        Account updatedAccount = account.get();
+        Double deposit = transaction.getAmount();
+        Double balance = updatedAccount.getBalance();
+        updatedAccount.setBalance(balance + deposit);
         transaction.setAccount(account.get());
         Transaction addedTransaction = transactionService.addTransaction(transaction);
+        accountService.updateAccount(updatedAccount);
         return new ResponseEntity<>(addedTransaction, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/create-withdrawal/{id}")
+    public ResponseEntity<Transaction> addWithdrawal(@RequestBody Transaction transaction, @PathVariable("id") Long id) {
+        Optional<Account> account = accountService.findAccountById(id);
+        Account updatedAccount = account.get();
+        Double amount = transaction.getAmount();
+        Double balance = updatedAccount.getBalance();
+        updatedAccount.setBalance(balance - amount);
+        transaction.setAccount(account.get());
+        Transaction addedTransaction = transactionService.addTransaction(transaction);
+        accountService.updateAccount(updatedAccount);
+        return new ResponseEntity<>(addedTransaction, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/create-payment/{id}")
+    public ResponseEntity<Transaction> addPayment(@RequestBody Transaction transaction, @PathVariable("id") Long id) {
+        Optional<Account> account = accountService.findAccountById(id);
+        Account updatedAccount = account.get();
+        Double payment = transaction.getAmount();
+        Double balance = updatedAccount.getBalance();
+        updatedAccount.setBalance(balance - payment);
+        transaction.setAccount(account.get());
+        Transaction addedTransaction = transactionService.addTransaction(transaction);
+        accountService.updateAccount(updatedAccount);
+        return new ResponseEntity<>(addedTransaction, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/create-transfer/{id1}&{id2}")
+    public ResponseEntity<Transaction> processTransfer(@RequestBody Transaction transaction, @PathVariable("id1") Long id1, @PathVariable("id2") Long id2) {
+        // From Account - Transfer Logic
+        Optional<Account> fromAccountOpt = accountService.findAccountById(id1);
+        Account fromAccount = fromAccountOpt.get();
+        Double transferAmount = transaction.getAmount();
+        Double fromBalance = fromAccount.getBalance();
+        fromAccount.setBalance(fromBalance - transferAmount);
+        transaction.setAccount(fromAccount);
+        Transaction addedTransfer = transactionService.addTransaction(transaction);
+        accountService.updateAccount(fromAccount);
+        Optional<Account> toAccountOpt = accountService.findAccountById(id2);
+        Account toAccount = toAccountOpt.get();
+        Double toBalance = toAccount.getBalance();
+        Transaction addedDeposit = new Transaction();
+        addedDeposit.setTransactionType(TransactionType.DEPOSIT);
+        toAccount.setBalance(toBalance + transferAmount);
+        addedDeposit.setAccount(toAccount);
+        //Set this to something custom
+        addedDeposit.setDescription("Transfer from: " + fromAccount.getCustomer().getFirstname());
+        addedDeposit.setAmount(transaction.getAmount());
+        transactionService.addTransaction(addedDeposit);
+        accountService.updateAccount(toAccount);
+        System.out.println(fromAccount);
+        System.out.println(toAccount);
+        return new ResponseEntity<>(addedTransfer, HttpStatus.CREATED);
     }
 
     @GetMapping("/all")
