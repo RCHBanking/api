@@ -17,9 +17,10 @@ import java.util.Optional;
 public class JWTUtils {
 
     SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    public String generateToken(String id) {
+    public String generateToken(String username, long id) {
         return Jwts.builder().setClaims(new HashMap<String, Object>())
-                .setSubject(id)
+                .setSubject(username)
+                .setId(String.valueOf(id))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
                 .signWith(key).compact();
@@ -41,6 +42,14 @@ public class JWTUtils {
             return getClaims(token).get().getSubject();
         } catch (NoSuchElementException e) {
             return "";
+        }
+
+    }
+    public int getId(String token) {
+        try {
+            return Integer.parseInt(getClaims(token).get().getId());
+        } catch (NoSuchElementException e) {
+            return -1;
         }
 
     }
