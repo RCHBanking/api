@@ -11,7 +11,7 @@ import java.util.Set;
 
 @DynamicInsert
 @Entity
-@Table(name="CUSTOMER")
+@Table(name="CUSTOMERS")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

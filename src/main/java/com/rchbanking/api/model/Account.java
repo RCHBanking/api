@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name="ACCOUNTS")
@@ -23,6 +24,11 @@ public class Account {
     @ToString.Exclude
     @JsonIgnore
     private Customer customer;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account", fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    Set<Transaction> transactions;
 
     @JsonBackReference
 
