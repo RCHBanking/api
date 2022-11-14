@@ -3,9 +3,13 @@ package com.rchbanking.api.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
+
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
+@DynamicInsert
 @Entity
 @Table(name="CUSTOMER")
 @Data
@@ -17,6 +21,11 @@ public class Customer {
     private Long id;
     private String firstname;
     private String surname;
+    private Date date_became_customer;
+    private String address1;
+    private String address2;
+    private String state;
+    private String country;
     @Column(unique = true)
     private String email;
     @Column(unique = true)
