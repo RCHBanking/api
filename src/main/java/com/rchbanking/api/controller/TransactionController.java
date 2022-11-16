@@ -115,4 +115,16 @@ public class TransactionController {
         return new ResponseEntity<>(accountExpenses, HttpStatus.OK);
     }
 
+    @GetMapping("/view-income-sum/{id}")
+    public ResponseEntity<Double> getIncomeSumTransactionsById(@PathVariable("id") Long id) {
+        Double accountIncomeSum = transactionService.getIncomeSum(id);
+        return new ResponseEntity<>(accountIncomeSum, HttpStatus.OK);
+    }
+
+    @GetMapping("/view-expense-sum/{id}")
+    public ResponseEntity<Double> getExpenseSumTransactionsById(@PathVariable("id") Long id) {
+        Double accountExpenseSum = transactionService.getExpenseSum(id);
+        return new ResponseEntity<>(accountExpenseSum, HttpStatus.OK);
+    }
+
 }
