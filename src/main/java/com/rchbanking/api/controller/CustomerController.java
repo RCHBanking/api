@@ -1,6 +1,8 @@
 package com.rchbanking.api.controller;
 
+import com.rchbanking.api.model.Account;
 import com.rchbanking.api.model.Customer;
+import com.rchbanking.api.service.AccountService;
 import com.rchbanking.api.service.CustomerService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +18,19 @@ import java.util.List;
 public class CustomerController {
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private AccountService accountService;
 
 
 
     @PostMapping("/register")
     public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer) {
         Customer addedCustomer = customerService.addCustomer(customer);
+        Account account = new Account();
+        account.setName("checking");
+        account.setCustomer(addedCustomer);
+        account.setBalance(0d);
+        Account addedAccount = accountService.addAccount(account);
         return new ResponseEntity<>(addedCustomer, HttpStatus.CREATED);
     }
     @GetMapping("/all")
