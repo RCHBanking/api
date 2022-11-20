@@ -1,9 +1,11 @@
 package com.rchbanking.api.controller;
 
 import com.rchbanking.api.model.Account;
+import com.rchbanking.api.model.Customer;
 import com.rchbanking.api.model.Transaction;
 import com.rchbanking.api.model.TransactionType;
 import com.rchbanking.api.service.AccountService;
+import com.rchbanking.api.service.CustomerService;
 import com.rchbanking.api.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,8 @@ public class TransactionController {
     private AccountService accountService;
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private CustomerService customerService;
 
     @PostMapping("/create-deposit/{id}")
     public ResponseEntity<Transaction> addDeposit(@RequestBody Transaction transaction, @PathVariable("id") Long id) {
@@ -88,6 +92,65 @@ public class TransactionController {
         accountService.updateAccount(toAccount);
         System.out.println(fromAccount);
         System.out.println(toAccount);
+        return new ResponseEntity<>(addedTransfer, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/create-zelle-payment/{id1}&{email}")
+    public ResponseEntity<Transaction> processPayment(@RequestBody Transaction transaction, @PathVariable("id1") Long id1, @PathVariable("email") String email) {
+        // From Account - Payment Logic
+        // Find From account by Id, retrieving from optional
+        Optional<Account> fromAccountOpt = accountService.findAccountById(id1);
+        System.out.println("TEST");
+        Account fromAccount = fromAccountOpt.get();
+        System.out.println(2);
+
+        // declaring values from request body (probably redundant)
+        Double transferAmount = transaction.getAmount();
+        System.out.println(3);
+        Double fromBalance = fromAccount.getBalance();
+        System.out.println(4);
+        //setting balance of the from account (deducting amount)
+        fromAccount.setBalance(fromBalance - transferAmount);
+        System.out.println(5);
+        transaction.setAccount(fromAccount);
+        System.out.println(6);
+        //updating database to post transaction and updating the account information
+        Transaction addedTransfer = transactionService.addTransaction(transaction);
+        System.out.println(7);
+        accountService.updateAccount(fromAccount);
+        System.out.println(8);
+
+        //Setting account 2
+
+        //Find customer by the email string input
+        System.out.println(9);
+        Optional<Customer> recipientCustomerOpt = customerService.findCustomerByEmail(email);
+        System.out.println(10);
+        Customer recipientCustomer = recipientCustomerOpt.get();
+
+
+        //Find account (Recipient) to create transaction and update balance on account
+        System.out.println(11);
+        Optional<Account> toAccountOpt = accountService.findCheckingById(recipientCustomer.getId());
+        Account toAccount = toAccountOpt.get();
+
+        System.out.println(12);
+        // Declaring initial balance to be updated
+        Double toBalance = toAccount.getBalance();
+        System.out.println(13);
+        // Creating transaction to update in the database
+        Transaction addedDeposit = new Transaction();
+        addedDeposit.setTransactionType(TransactionType.ZELLE_DEPOSIT);
+        toAccount.setBalance(toBalance + transferAmount);
+        addedDeposit.setAccount(toAccount);
+        System.out.println(14);
+        //Set this to something custom
+        addedDeposit.setDescription("Payment from: " + fromAccount.getCustomer().getFirstname() + " - " + addedTransfer.getDescription());
+        addedDeposit.setAmount(transaction.getAmount());
+        transactionService.addTransaction(addedDeposit);
+        accountService.updateAccount(toAccount);
+        System.out.println(toAccount);
+        System.out.println(fromAccount);
         return new ResponseEntity<>(addedTransfer, HttpStatus.CREATED);
     }
 

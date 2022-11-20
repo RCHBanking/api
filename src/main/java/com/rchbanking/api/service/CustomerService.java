@@ -29,5 +29,7 @@ public class CustomerService {
 
     public Optional<Customer> findCustomerById(Long id) {return customerRepository.findById(id);};
 
+    public Optional<Customer> findCustomerByEmail(String email) { return customerRepository.findByEmail(email); }
+
 
 }

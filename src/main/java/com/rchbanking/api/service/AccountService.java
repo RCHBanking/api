@@ -36,4 +36,8 @@ public class AccountService {
 
     public Account updateAccount(Account account) { return accountRepository.save(account); }
 
+    public Optional<Account> findCheckingById(Long id){
+        return accountRepository.findCheckingById(id);
+    }
+
 }

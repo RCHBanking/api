@@ -1,6 +1,7 @@
 package com.rchbanking.api.controller;
 
 import com.rchbanking.api.model.Account;
+import com.rchbanking.api.model.AccountType;
 import com.rchbanking.api.model.Customer;
 import com.rchbanking.api.service.AccountService;
 import com.rchbanking.api.service.CustomerService;
@@ -30,6 +31,7 @@ public class CustomerController {
         account.setName("checking");
         account.setCustomer(addedCustomer);
         account.setBalance(0d);
+        account.setAccountType(AccountType.CHECKING);
         Account addedAccount = accountService.addAccount(account);
         return new ResponseEntity<>(addedCustomer, HttpStatus.CREATED);
     }

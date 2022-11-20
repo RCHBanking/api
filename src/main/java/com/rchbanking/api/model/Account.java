@@ -18,6 +18,8 @@ public class Account {
     private Long id;
     private String name;
     private Double balance;
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="customer_id")
     @EqualsAndHashCode.Exclude
